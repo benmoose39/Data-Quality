@@ -1,6 +1,6 @@
 # Data-Quality
-Automated profiling of any .csv or .xlsx data files\n\n
+Automated profiling of any .csv or .xlsx data files
 
-[REQUIREMENTS]\n
-You'll need Python3 to run these scripts.\n
+[REQUIREMENTS]
+You'll need Python3 to run these scripts.
 Run this command in a terminal or command prompt: pip install openpyxl
