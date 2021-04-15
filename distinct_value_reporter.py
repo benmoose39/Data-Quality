@@ -2,13 +2,21 @@ import pandas as pd
 import math
 import sys
 
-filename = input('Name of csv file to read(eg.: example.csv): ')
-delimiter = input('Delimiter? ')
-
+filename = input('[?]Name of csv file to read(eg.: example.csv): ')
+delimiter = input('[?]Delimiter? ')
+enc = 'utf-8'
+enc_opt = input('[?]Select encoding format:\n\t1 : utf-8\n\t2 : cp1252\nDEFAULT is utf-8\nEnter your option: ')
+if enc_opt == '2':
+    enc = 'cp1252'
+    
 try:
-    file = pd.read_csv(filename, sep=delimiter, low_memory=False)
+    file = pd.read_csv(filename, sep=delimiter, encoding=enc, low_memory=False)
 except FileNotFoundError:
     print(f"[!] No such file found in the current directory. Did you mean {filename}.csv?\nExiting...")
+    input('Press ENTER to exit:')
+    sys.exit()
+except UnicodeDecodeError:
+    print(f"[!] Error: Try changing encoding format")
     input('Press ENTER to exit:')
     sys.exit()
 
