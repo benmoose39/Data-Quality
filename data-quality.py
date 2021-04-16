@@ -40,6 +40,7 @@ def clean():
         os.remove(f"excel_output_{filename.split('.')[0]}.csv")
         os.remove(f"report_{filename.split('.')[0]}.csv")
         os.remove(f"report_{filename.split('.')[0]}.txt")
+        os.remove(f"..\\{filename}")
         print('[*]Removed temporary files')
 
 
@@ -80,7 +81,7 @@ def distinct_value_reporter(file):
         uniq_val.append('')
         val_count.append('')
 
-    print(f"[*] Writing data to ./excel_output_{filename} ---")
+    print(f"[*] Writing data to excel_output_{filename} ---")
     dict = {'Column' : attributes, 'Distinct Value' : uniq_val, 'Count' : val_count}
     df = pd.DataFrame(dict)
     df.to_csv(f"excel_output_{filename}", index=False)
@@ -127,7 +128,7 @@ def null_unique_reporter(file):
     write = input('[?]Write to txt? (y/N)')
     if write == 'y' or write == 'Y':
         out_file = 'report_'+filename.split('.')[0]+'.txt'
-        print(f'[*]Writing to ./{out_file} ---')
+        print(f'[*]Writing to {out_file} ---')
         
         with open(out_file, 'w') as f:
             f.write('********************NULL*********************\n')
@@ -139,11 +140,12 @@ def null_unique_reporter(file):
     write = input('[?]Write to csv? (y/N)')
     if write == 'y' or write == 'Y':
         df = pd.DataFrame({'Attribute':column_list, 'NULL_count':null_list, 'NULL_Percentage':null_percent, 'Distinct_count':distinct_list, 'Distinct_Percentage':distinct_percent})
-        print(f'[*]Writing to ./report_{filename} ---')
+        print(f'[*]Writing to report_{filename} ---')
         df.to_csv(f'report_{filename}', index=False)
 
     
-
+#Start------------------------------------------------------------------------------------------------------------------------------------------------------------------
+flag = False        
 filename = input('[?]Name of file to read: ')
 if '.' not in filename:
     print(f'[!]Did you mean {filename}.csv?')
@@ -152,6 +154,7 @@ if '.' not in filename:
 
 if filename.split('.')[-1] == 'xlsx':
     filename = excel_to_csv(filename)
+    flag = True
     
 delimiter = input('[?]Delimiter? ')
 enc = 'utf-8'
