@@ -54,7 +54,8 @@ def distinct_value_reporter(file):
     val_count = []
 
     flag = False
-
+    
+    print(f"\n[*] Finding distinct values---")
     print(f"[*] Total number of attributes: {rem}")
     for column in list(file):
         flag = True
@@ -125,6 +126,11 @@ def null_unique_reporter(file):
     print(distinct_df)
 
 
+    df = pd.DataFrame({'Attribute':column_list, 'NULL_count':null_list, 'NULL_Percentage':null_percent, 'Distinct_count':distinct_list, 'Distinct_Percentage':distinct_percent})
+    print(f'[*]Writing to report_{filename} ---')
+    df.to_csv(f'report_{filename}', index=False)
+
+
     write = input('[?]Write to txt? (y/N)')
     if write == 'y' or write == 'Y':
         out_file = 'report_'+filename.split('.')[0]+'.txt'
@@ -137,11 +143,6 @@ def null_unique_reporter(file):
             f.write('******************DISTINCT*******************\n')
             f.write(distinct_df.to_string())
 
-    write = input('[?]Write to csv? (y/N)')
-    if write == 'y' or write == 'Y':
-        df = pd.DataFrame({'Attribute':column_list, 'NULL_count':null_list, 'NULL_Percentage':null_percent, 'Distinct_count':distinct_list, 'Distinct_Percentage':distinct_percent})
-        print(f'[*]Writing to report_{filename} ---')
-        df.to_csv(f'report_{filename}', index=False)
 
     
 #Start------------------------------------------------------------------------------------------------------------------------------------------------------------------
