@@ -212,6 +212,10 @@ except UnicodeDecodeError:
     print(f"[!] Error: Try changing encoding format")
     input('Press ENTER to exit:')
     sys.exit()
+except ValueError:
+    print(f"[!] Error: Enter the correct delimiter")
+    input('Press ENTER to exit:')
+    sys.exit()
 
 try:
     os.chdir(f"Output_{filename.split('.')[0]}")
