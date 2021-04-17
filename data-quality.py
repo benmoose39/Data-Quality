@@ -43,7 +43,7 @@ try:
     #Profile and output data to .xlsx file
     def profile(null_sheet, distinct_sheet):
         #null_sheet = pd.read_csv(f"report_{filename.split('.')[0]}.csv")
-        #distinct_sheet = pd.read_csv(f"excel_output_{filename.split('.')[0]}.csv")
+        #distinct_sheet = pd.read_csv(f"distinct_values_{filename.split('.')[0]}.csv")
 
         wb = Workbook()
 
