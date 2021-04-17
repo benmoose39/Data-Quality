@@ -68,7 +68,7 @@ def clean():
             pass
         finally:
             if excel:
-                os.remove(f"..\\{filename}")
+                os.remove(f"../{filename}")
             print('[*]Removed temporary files')
 
 
