@@ -1,10 +1,3 @@
-import pandas as pd
-from openpyxl import Workbook
-import csv
-import math
-import sys
-import os
-
 print(r''' _____________________________________________________________
 |   ____        _            ___              _ _ _           |
 |  |  _ \  __ _| |_ __ _    / _ \ _   _  __ _| (_) |_ _   _   |
@@ -17,6 +10,24 @@ print(r''' _____________________________________________________________
 |_____________________________________________________________|
 ''')
 
+
+import sys
+import os
+
+try:
+    print(f"[*]Checking for dependencies...", end='')
+    import pandas as pd
+    from openpyxl import Workbook
+    import csv
+    import math
+    print(" [OK]")
+except ModuleNotFoundError as nomodule:
+    print(f"\n[!]{nomodule}")
+    module = str(nomodule)[17:-1]
+    print(f"[*]Run 'pip install {module}' and come back!!")
+    input('Press ENTER to exit:')
+    sys.exit()
+    
 
 
 def excel_to_csv(file):
@@ -162,14 +173,19 @@ def null_unique_reporter(file):
 #Start------------------------------------------------------------------------------------------------------------------------------------------------------------------
 flag = False        
 filename = input('[?]Name of file to read: ')
-if '.' not in filename:
-    print(f'[!]Did you mean {filename}.csv?')
+if filename not in os.listdir():
+    print(f'[!]No such file found. Did you mean {filename}.csv?')
     input('Press ENTER to exit:')
     sys.exit()
 
 if filename.split('.')[-1] == 'xlsx':
-    filename = excel_to_csv(filename)
-    flag = True
+    try:
+        filename = excel_to_csv(filename)
+        flag = True
+    except FileNotFoundError:
+        print('[!]No such file found.')
+        input('Press ENTER to exit:')
+        sys.exit()
     
 delimiter = input('[?]Delimiter? ')
 enc = 'utf-8'
