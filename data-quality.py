@@ -10,17 +10,17 @@ print(r''' _____________________________________________________________
 |_____________________________________________________________|
 ''')
 
-
+#Dependencies
 import sys
 import os
 
+print(f"[*]Checking for dependencies...", end='')
 try:
-    print(f"[*]Checking for dependencies...", end='')
     import pandas as pd
     from openpyxl import Workbook
     import csv
     import math
-    print(" [OK]")
+    print("[OK]")
 except ModuleNotFoundError as nomodule:
     print(f"\n[!]{nomodule}")
     module = str(nomodule)[17:-1]
@@ -29,14 +29,16 @@ except ModuleNotFoundError as nomodule:
     sys.exit()
     
 
-
+#converting the file in case it is .xlsx
 def excel_to_csv(file):
     df = pd.DataFrame(pd.read_excel(file))
+    print(f'[*]Converting file to {file.split(".")[0]}.csv ...', end='')
     df.to_csv(f"{file.split('.')[0]}.csv", index=False)
-    print(f'[*]Converted the file to {file.split(".")[0]}.csv')
+    print(f'[OK]')
     return file.split('.')[0] + '.csv'
 
 
+#Profile and output data to .xlsx file
 def profile():
     all_csv = []
     for file in os.listdir():
@@ -59,6 +61,7 @@ def profile():
     print('-' * 50)
     
 
+#Removes unnecessary files
 def clean():
     rem = input('[?]Remove temporary files?(y/N): ')
     if rem == 'y' or rem == 'Y':
@@ -69,6 +72,7 @@ def clean():
         print('[*]Removed temporary files')
 
 
+#outputs all distinct values to .txt(optional) and .csv
 def distinct_value_reporter(file):
     rem = len(list(file))
 
@@ -107,10 +111,11 @@ def distinct_value_reporter(file):
         uniq_val.append('')
         val_count.append('')
 
-    print(f"[*] Writing data to excel_output_{filename} ---")
+    print(f"[*] Writing data to excel_output_{filename} ...", end='')
     dict = {'Column' : attributes, 'Distinct Value' : uniq_val, 'Count' : val_count}
     df = pd.DataFrame(dict)
     df.to_csv(f"excel_output_{filename}", index=False)
+    print(f"[OK]")
 
     #input('[SUCCESS] Press ENTER to exit...')
 
@@ -152,14 +157,15 @@ def null_unique_reporter(file):
 
 
     df = pd.DataFrame({'Attribute':column_list, 'NULL_count':null_list, 'NULL_Percentage':null_percent, 'Distinct_count':distinct_list, 'Distinct_Percentage':distinct_percent})
-    print(f'[*]Writing to report_{filename} ---')
+    print(f'[*]Writing to report_{filename} ...', end='')
     df.to_csv(f'report_{filename}', index=False)
+    print(f'[OK]')
 
 
     write = input('[?]Write to txt? (y/N)')
     if write == 'y' or write == 'Y':
         out_file = 'report_'+filename.split('.')[0]+'.txt'
-        print(f'[*]Writing to {out_file} ---')
+        print(f'[*]Writing to {out_file} ...', end='')
         
         with open(out_file, 'w') as f:
             f.write('********************NULL*********************\n')
@@ -168,6 +174,7 @@ def null_unique_reporter(file):
             f.write('******************DISTINCT*******************\n')
             f.write(distinct_df.to_string())
 
+        print(f'[OK]')
 
     
 #Start------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -207,8 +214,9 @@ except UnicodeDecodeError:
 try:
     os.chdir(f"Output_{filename.split('.')[0]}")
 except FileNotFoundError:
-    print(f"[*]Creating folder- output_{filename.split('.')[0]}")
+    print(f"[*]Creating folder- output_{filename.split('.')[0]} ...", end='')
     os.mkdir(f"Output_{filename.split('.')[0]}")
+    print(f'[OK]')
     os.chdir(f"Output_{filename.split('.')[0]}")
 finally:
     null_unique_reporter(file)
