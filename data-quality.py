@@ -39,14 +39,9 @@ def excel_to_csv(file):
 
 
 #Profile and output data to .xlsx file
-def profile():
-    all_csv = []
-    for file in os.listdir():
-        if '.csv' in file:
-            all_csv.append(file)
-
-    null_sheet = pd.read_csv(f"report_{filename.split('.')[0]}.csv")
-    distinct_sheet = pd.read_csv(f"excel_output_{filename.split('.')[0]}.csv")
+def profile(null_sheet, distinct_sheet):
+    #null_sheet = pd.read_csv(f"report_{filename.split('.')[0]}.csv")
+    #distinct_sheet = pd.read_csv(f"excel_output_{filename.split('.')[0]}.csv")
 
     wb = Workbook()
 
@@ -65,11 +60,16 @@ def profile():
 def clean():
     rem = input('[?]Remove temporary files?(y/N): ')
     if rem == 'y' or rem == 'Y':
-        os.remove(f"excel_output_{filename.split('.')[0]}.csv")
-        os.remove(f"report_{filename.split('.')[0]}.csv")
-        os.remove(f"report_{filename.split('.')[0]}.txt")
-        os.remove(f"..\\{filename}")
-        print('[*]Removed temporary files')
+        try:
+            os.remove(f"excel_output_{filename.split('.')[0]}.csv")
+            os.remove(f"report_{filename.split('.')[0]}.csv")
+            os.remove(f"report_{filename.split('.')[0]}.txt")
+        except FileNotFoundError:
+            pass
+        finally:
+            if excel:
+                os.remove(f"..\\{filename}")
+            print('[*]Removed temporary files')
 
 
 #outputs all distinct values to .txt(optional) and .csv
@@ -117,6 +117,8 @@ def distinct_value_reporter(file):
     df.to_csv(f"excel_output_{filename}", index=False)
     print(f"[OK]")
 
+    return df
+
     #input('[SUCCESS] Press ENTER to exit...')
 
 
@@ -156,11 +158,10 @@ def null_unique_reporter(file):
     print(distinct_df)
 
 
-    df = pd.DataFrame({'Attribute':column_list, 'NULL_count':null_list, 'NULL_Percentage':null_percent, 'Distinct_count':distinct_list, 'Distinct_Percentage':distinct_percent})
+    df = pd.DataFrame({'Attribute':column_list, 'NULL_count':null_list, 'NULL_Percentage':null_percent, 'Unique_count':distinct_list, 'Unique_Percentage':distinct_percent})
     print(f'[*]Writing to report_{filename} ...', end='')
     df.to_csv(f'report_{filename}', index=False)
     print(f'[OK]')
-
 
     write = input('[?]Write to txt? (y/N)')
     if write == 'y' or write == 'Y':
@@ -175,10 +176,11 @@ def null_unique_reporter(file):
             f.write(distinct_df.to_string())
 
         print(f'[OK]')
+    return df
 
     
 #Start------------------------------------------------------------------------------------------------------------------------------------------------------------------
-flag = False        
+excel = False        
 filename = input('[?]Name of file to read: ')
 if filename not in os.listdir():
     print(f'[!]No such file found. Did you mean {filename}.csv?')
@@ -188,7 +190,7 @@ if filename not in os.listdir():
 if filename.split('.')[-1] == 'xlsx':
     try:
         filename = excel_to_csv(filename)
-        flag = True
+        excel = True
     except FileNotFoundError:
         print('[!]No such file found.')
         input('Press ENTER to exit:')
@@ -219,9 +221,9 @@ except FileNotFoundError:
     print(f'[OK]')
     os.chdir(f"Output_{filename.split('.')[0]}")
 finally:
-    null_unique_reporter(file)
-    distinct_value_reporter(file)
-    profile()
+    null_sheet = null_unique_reporter(file)
+    distinct_sheet = distinct_value_reporter(file)
+    profile(null_sheet, distinct_sheet)
     clean()
 
     input('[SUCCESS]Press ENTER to exit...')
