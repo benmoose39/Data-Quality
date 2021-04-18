@@ -2,6 +2,9 @@
 ### Automated profiling of any .csv or .xlsx data files
 
 ###### `data-quality.py` is the final, combined, single script for automated profiling
+*Input: csv or xlsx*
+
+*Output: xlsx*
 
 ## Requirements
 > You'll need Python3 to run these scripts
