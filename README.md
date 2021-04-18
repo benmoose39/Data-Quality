@@ -12,8 +12,6 @@
 
 `pip install openpyxl`
 
-`pip install csv`
-
 ## General
 > `distinct_value_reporter` and `null-unique-reporter` (hereafter referred to as __reporters__) take .csv files as inputs
 
