@@ -45,6 +45,7 @@ try:
         #null_sheet = pd.read_csv(f"report_{filename.split('.')[0]}.csv")
         #distinct_sheet = pd.read_csv(f"distinct_values_{filename.split('.')[0]}.csv")
 
+        print(f"[*] Writing to Profile_{filename.split('.')[0]}.xlsx...")
         wb = Workbook()
 
         writer = pd.ExcelWriter(f"Profile_{filename.split('.')[0]}.xlsx")
