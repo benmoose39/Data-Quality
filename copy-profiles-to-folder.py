@@ -50,7 +50,12 @@ if input('[?] Delete the original folders? (y/N): ') in y:
     os.chdir('../')
     print('[*] Removing folders...', end=' ')
     for folder in folders:
-        shutil.rmtree(folder, ignore_errors=True)
+        try:
+            shutil.rmtree(folder)
+        except:
+            print('[!] Some error occured; Please remove the folder manually.')
+            input('Press ENTER to exit')
+            sys.exit()
     print('[OK]')
 
 input('Press ENTER to exit...')

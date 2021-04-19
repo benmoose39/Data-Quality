@@ -222,7 +222,7 @@ try:
     try:
         os.chdir(f"Output_{filename.split('.')[0]}")
     except FileNotFoundError:
-        print(f"[*]Creating folder- output_{filename.split('.')[0]} ...", end='')
+        print(f"[*]Creating folder- Output_{filename.split('.')[0]} ...", end='')
         os.mkdir(f"Output_{filename.split('.')[0]}")
         print(f'[OK]')
         os.chdir(f"Output_{filename.split('.')[0]}")
