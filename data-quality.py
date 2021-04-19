@@ -50,10 +50,17 @@ try:
 
         writer = pd.ExcelWriter(f"Profile_{filename.split('.')[0]}.xlsx")
 
-        null_sheet.to_excel(writer, 'NULL and UNIQUE', index=False)
-        distinct_sheet.to_excel(writer, 'DISTINCT VALUES', index=False)
+        try:
+            null_sheet.to_excel(writer, 'NULL and UNIQUE', index=False)
+            distinct_sheet.to_excel(writer, 'DISTINCT VALUES', index=False)
+        except ValueError as v_error:
+            print(f"[!] Error: {v_error}")
+            print(f"[!] Suggestion: Split the distinct_value file and save as two separate files")
+            input('Press ENTER to exit...')
+            sys.exit()
 
         writer.save()
+        
         print('-' * 50)
         print(f"[SUCCESS]Profile_{filename.split('.')[0]}.xlsx created")
         print('-' * 50)
