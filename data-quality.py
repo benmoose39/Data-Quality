@@ -197,6 +197,11 @@ try:
         input('Press ENTER to exit:')
         sys.exit()
 
+    elif filename.split('.')[-1] not in ['xlsx', 'csv']:
+        print(f'[!]Unsupported file type')
+        input('Press ENTER to exit:')
+        sys.exit()
+
     if filename.split('.')[-1] == 'xlsx':
         try:
             filename = excel_to_csv(filename)
