@@ -16,6 +16,8 @@
 `pip install openpyxl`
 
 ## General
-> `distinct_value_reporter` and `null-unique-reporter` (hereafter referred to as __reporters__) take .csv files as inputs
+> `duplicate_checker`, `distinct_value_reporter` and `null-unique-reporter` take .csv files as inputs
+
+> `duplicate_checker` deletes all duplicate records and creates a new, clean csv.
 
 > Got Issues? I can help
