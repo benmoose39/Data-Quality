@@ -135,6 +135,7 @@ try:
     def null_unique_reporter(file):
         rows = len(file)
         print(f"[INFO]\n[*]rows: {rows}\n[*]columns: {len(list(file.columns))}")
+        print(f"[*]Number of duplicate records: {file.duplicated().sum()}")
 
         #print('*****************NULL*********************')
         null_count = list(file.isnull().sum())
@@ -179,9 +180,11 @@ try:
             print(f'[*]Writing to {out_file} ...', end='')
             
             with open(out_file, 'w') as f:
+                f.write(f"[INFO]\n[*]rows: {rows}\n[*]columns: {len(list(file.columns))}\n")
+                f.write(f"[*]Number of duplicate records: {file.duplicated().sum()}\n\n")
                 f.write('********************NULL*********************\n')
                 f.write(null_df.to_string())
-                f.write('\n\n\n\n\n\n\n')
+                f.write('\n\n\n\n')
                 f.write('******************DISTINCT*******************\n')
                 f.write(distinct_df.to_string())
 
