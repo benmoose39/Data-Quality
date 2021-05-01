@@ -1,6 +1,8 @@
 # Data-Quality
 ### Automated profiling of any .csv or .xlsx data files
 
+#### `DataQuality_v2.py` is out now...
+>> Profile, check for duplicate records and much more...!!
 #### `data-quality.py` is the final, combined, single script for automated profiling
 >>   *Input: csv or xlsx*
 
