@@ -1,11 +1,10 @@
-print(r'''
- _____________________________________________________________
+print(r''' _____________________________________________________________
 |   ____        _            ___              _ _ _           |
 |  |  _ \  __ _| |_ __ _    / _ \ _   _  __ _| (_) |_ _   _   |
 |  | | | |/ _` | __/ _` |  | | | | | | |/ _` | | | __| | | |  |
 |  | |_| | (_| | || (_| |  | |_| | |_| | (_| | | | |_| |_| |  |
 |  |____/ \__,_|\__\__,_|___\__\_\\__,_|\__,_|_|_|\__|\__, |  |
-|                      |_____|         Version: 2.0   |___/   |
+|                      |_____|         Version: 2.1   |___/   |
 |                                                             |
 |  Author: BenMoose39           Initial Release: 12-Apr-2021  |
 |  https://github.com/benmoose39/Data-Quality                 |
@@ -13,7 +12,10 @@ print(r'''
 ''')
 ###########################################################
 def end():
-    input(f"Press ENTER to exit...")
+    try:
+        input(f"Press ENTER to exit...")
+    except KeyboardInterrupt:
+        sys.exit()
     sys.exit()
     
 ###########################################################
@@ -50,8 +52,8 @@ def csv_to_excel(filename, df):
 ############################################################
 def excel_to_csv(filename):
     try:
-        file = pd.DataFrame(pd.read_excel(f"{filename}.xlsx"))
         print(f'[*] Converting file to {filename}.csv... ', end='')
+        file = pd.DataFrame(pd.read_excel(f"{filename}.xlsx"))
         file.to_csv(f"{filename}.csv", index=False)
         print(f"[OK]")
     except FileNotFoundError:
@@ -60,7 +62,9 @@ def excel_to_csv(filename):
     return
 
 ############################################################
-def file_import(file):
+def file_import():
+    file = input(f"[?] Name of file to read: ")
+    
     excel = False
     csv = False
     if file not in os.listdir():
@@ -77,8 +81,10 @@ def file_import(file):
 
     if excel:
         excel_to_csv(filename)
+
+    df = dataframe(filename)
     
-    return filename, excel, csv
+    return filename, excel, csv, df
 
 ############################################################
 def dataframe(filename):
@@ -100,28 +106,29 @@ def dataframe(filename):
 ############################################################
 def choose():
     print("[*] Choose:")
-    print("1) Convert to csv")
-    print("2) Convert to excel(beta)")
-    print("3) Check for duplicate records")
-    print("4) Profile the dataset")
-    print("5) Quit")
+    print("\t1) Convert to csv")
+    print("\t2) Convert to excel(beta)")
+    print("\t3) Check for duplicate records")
+    print("\t4) Profile the dataset")
+    print("\t5) Copy profiling reports to `Profiles` folder")
+    print("\t6) Quit")
     while True:
         try:
             option = int(input('[?] Enter your option: '))
-            if option == 5:
+            if option == 6:
                 end()
-            elif option not in range(1,6):
+            elif option not in range(1,7):
                 print('[!] Invalid option')
                 continue
             break
         except ValueError:
-            print("[!] Options are 1,2,3,4,5")
+            print("[!] Options are 1,2,3,4,5,6")
     return option
 
 ############################################################
 def null_unique_report(file):
     rows = len(file)
-    print(f"[INFO]\n[*] Rows: {rows}\n[*] Columns: {len(list(file.columns))}")
+    print(f"\n[INFO]\n[*] Rows: {rows}\n[*] Columns: {len(list(file.columns))}")
     print(f"[*] Number of duplicate records: {file.duplicated().sum()}")
 
     null_count = list(file.isnull().sum())
@@ -148,13 +155,13 @@ def null_unique_report(file):
     distinct_df = pd.DataFrame({'Attribute':column_list, 'Distinct_count':distinct_list, 'Percentage':distinct_percent}, index=['' for i in range(len(list(file.columns)))])
 
     df = pd.DataFrame({'Attribute':column_list, 'NULL_count':null_list, 'NULL_Percentage':null_percent, 'Unique_count':distinct_list, 'Unique_Percentage':distinct_percent})
-    print(f'[*]Writing to report_{filename}.csv ...', end='')
+    print(f'[*] Writing to report_{filename}.csv ...', end='')
     df.to_csv(f'report_{filename}.csv', index=False)
     print(f'[OK]')
 
-    write = input('[?]Write to txt? (y/N)')
+    write = input('[?] Write to txt? (y/N)')
     if write == 'y' or write == 'Y':
-        print(f'[*]Writing to report_{filename}.txt ...', end='')
+        print(f'[*] Writing to report_{filename}.txt ...', end='')
             
         with open(f"report_{filename}.txt", 'w') as f:
             f.write(f"[INFO]\n[*]Rows: {rows}\n[*]Columns: {len(list(file.columns))}\n")
@@ -247,32 +254,72 @@ def check_duplicates(df):
             print(f"[OK]")
 
 ############################################################
+def copy_to_profiles():
+    global profiles
+    global folders
+    folder_name = 'Profiles'
+    folders = [folder for folder in os.listdir() if folder.startswith('Output_')]
+    profiles = []
+    print(f"[*] {len(folders)} output folders found.")
+    copy_count = 0
+    
+    for folder in folders:
+        for profile in os.listdir(folder):
+            if profile.startswith('Profile_') and os.path.isfile(f"{folder}/{profile}"):
+                profiles.append(os.path.realpath(f"{folder}/{profile}"))
+    if len(profiles) == 0:
+        print(f'[*] No files to copy')
+        end()
+    else:
+        print(f"[*] {len(profiles)} profiling reports found.")
+        print(f"[*] Copying...")
+    if folder_name not in os.listdir():
+        print(f"[*] Creating folder... ", end='')
+        os.mkdir(folder_name)
+        print(f"[OK]")
+    #print(f"[*] Copying {len(profiles) profiles...}")
+    for profile in profiles:
+        try:
+            shutil.copy(profile, 'Profiles')
+            copy_count += 1
+        except:
+            print('[!] Some error occured; Please copy manually.')
+            end()
+    if copy_count != len(profiles):
+        print(f'[!] {len(profiles)-copy_count} files could not be copied')
+
+    print(f'[*] {copy_count} files copied successfully')
+
+    return
+
+############################################################
 try:
     yes = ['y','Y']
     import sys
     import os
     import math
+    import shutil
     import_dependencies()
     from openpyxl import Workbook
     
-    file = input(f"[?] Name of file to read: ")
-    filename, excel, csv = file_import(file)
-    df = dataframe(filename)
-
     operation = choose()
-    if operation == 1:
+    if operation == 1: #convert to csv
+        filename, excel, csv, df = file_import()
         if csv:
             print(f"[*] File is already in csv format")
         else:
             excel_to_csv(filename)
-    elif operation == 2:
+    elif operation == 2: #convert to xlsx
+        filename, excel, csv, df = file_import()
         if excel:
             print(f"[*] File is already in xlsx format")
         else:
             csv_to_excel(filename, df)
-    elif operation == 3:
+    elif operation == 3: #check duplicate records
+        filename, excel, csv, df = file_import()
         check_duplicates(df)
-    elif operation == 4:
+    elif operation == 4: #Profile
+        filename, excel, csv, df = file_import()
         try:
             os.chdir(f"Output_{filename}")
         except FileNotFoundError:
@@ -284,6 +331,8 @@ try:
         null_unique = null_unique_report(df)
         distinct = distinct_report(df)
         profile(null_unique, distinct)
+    elif operation == 5:
+        copy_to_profiles()
         
     end()
 except KeyboardInterrupt:
