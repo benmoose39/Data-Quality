@@ -255,8 +255,6 @@ def check_duplicates(df):
 
 ############################################################
 def copy_to_profiles():
-    global profiles
-    global folders
     folder_name = 'Profiles'
     folders = [folder for folder in os.listdir() if folder.startswith('Output_')]
     profiles = []
@@ -280,7 +278,7 @@ def copy_to_profiles():
     #print(f"[*] Copying {len(profiles) profiles...}")
     for profile in profiles:
         try:
-            shutil.copy(profile, 'Profiles')
+            shutil.copy(profile, folder_name)
             copy_count += 1
         except:
             print('[!] Some error occured; Please copy manually.')
