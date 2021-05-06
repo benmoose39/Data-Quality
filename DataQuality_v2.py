@@ -4,7 +4,7 @@ print(r''' _____________________________________________________________
 |  | | | |/ _` | __/ _` |  | | | | | | |/ _` | | | __| | | |  |
 |  | |_| | (_| | || (_| |  | |_| | |_| | (_| | | | |_| |_| |  |
 |  |____/ \__,_|\__\__,_|___\__\_\\__,_|\__,_|_|_|\__|\__, |  |
-|                      |_____|         Version: 2.1   |___/   |
+|                      |_____|         Version: 2.2   |___/   |
 |                                                             |
 |  Author: BenMoose39           Initial Release: 12-Apr-2021  |
 |  https://github.com/benmoose39/Data-Quality                 |
@@ -110,19 +110,20 @@ def choose():
     print("\t2) Convert to excel(beta)")
     print("\t3) Check for duplicate records")
     print("\t4) Profile the dataset")
-    print("\t5) Copy profiling reports to `Profiles` folder")
-    print("\t6) Quit")
+    print("\t5) Primary_Key suggester")
+    print("\t6) Copy profiling reports to `Profiles` folder")
+    print("\t0) Quit")
     while True:
         try:
             option = int(input('[?] Enter your option: '))
-            if option == 6:
+            if option == 0:
                 end()
-            elif option not in range(1,7):
+            elif option not in range(0,7):
                 print('[!] Invalid option')
                 continue
             break
         except ValueError:
-            print("[!] Options are 1,2,3,4,5,6")
+            print("[!] Options are 0,1,2,3,4,5,6")
     return option
 
 ############################################################
@@ -254,6 +255,37 @@ def check_duplicates(df):
             print(f"[OK]")
 
 ############################################################
+def pk_suggester(df):
+    attribs = {}
+    key = 1
+    for column in df.columns:
+        attribs[key] = column
+        key += 1
+
+    print(f"[*] Listing columns...")
+    for key in attribs:
+        print(f"\t{key} : {attribs[key]}")
+
+    while True:
+        try:
+            check = list(map(int, input('[?] Enter keys corresponding to the columns you want in the pkey, separated by commas: ').split(',')))
+            for key in check:
+                if key not in attribs:
+                    raise ValueError
+        except ValueError:
+            print(f"[!] Invalid key found in the input. Retrying...")
+            continue
+        break
+    pk = [attribs[key] for key in check]
+    dups = df.duplicated(pk).sum()
+    if dups == 0:
+        print(f"[*] Good pkey choice!!")
+    else:
+        print(f"[!] {dups} duplicates based on your your pkey combination.")
+
+    return       
+
+############################################################
 def copy_to_profiles():
     folder_name = 'Profiles'
     folders = [folder for folder in os.listdir() if folder.startswith('Output_')]
@@ -330,6 +362,9 @@ try:
         distinct = distinct_report(df)
         profile(null_unique, distinct)
     elif operation == 5:
+        filename, excel, csv, df = file_import()
+        pk_suggester(df)
+    elif operation == 6:
         copy_to_profiles()
         
     end()
