@@ -1,5 +1,7 @@
-# Data-Quality
-![image](https://user-images.githubusercontent.com/29022864/124321901-16de9880-db9c-11eb-8072-a5d5951f4e35.png)
+<h1 align="center"> Data-Quality </h1>
+<p align="center">
+<img align="center" src="https://user-images.githubusercontent.com/29022864/124321901-16de9880-db9c-11eb-8072-a5d5951f4e35.png">
+</p>
 
 ### Automated profiling of any .csv or .xlsx data files
 
