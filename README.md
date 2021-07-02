@@ -1,4 +1,6 @@
 # Data-Quality
+![image](https://user-images.githubusercontent.com/29022864/124321901-16de9880-db9c-11eb-8072-a5d5951f4e35.png)
+
 ### Automated profiling of any .csv or .xlsx data files
 
 #### `DataQuality_v2.py` is out now...
@@ -17,3 +19,5 @@
 
 ## General
 > Got Issues? I can help
+
+
